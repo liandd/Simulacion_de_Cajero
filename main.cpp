@@ -7,7 +7,7 @@
 
 using namespace std;
 
-int tam = 100;
+int tam = 101;
 //Funcion para trabajar en linux con getch(), debido a que no esta presente en sus librerias
 int getch (void){
     struct termios oldattr, newattr;
