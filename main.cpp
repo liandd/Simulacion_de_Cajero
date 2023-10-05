@@ -41,6 +41,7 @@ struct Banco{
     string clave="";
     double saldo=0;
 };
+
 bool validarClave (string clave){
     int longitud, i;
     bool aux = true;
@@ -108,7 +109,7 @@ bool compararClave(Banco cliente[], int tam, int ced) {
         contarLetras++;
         if (contarLetras == 5) {
             if (intentos >= 3) {
-                cout << "\nHA SUPERADO EL NUMERO DE INTENTOS DISPONIBLES PARA CONSULTAR SALDO\n";
+                cout << "\nHA SUPERADO EL NUMERO DE INTENTOS DISPONIBLES\n";
                 estado = false;
                 break;
             }
@@ -140,6 +141,7 @@ bool compararClave(Banco cliente[], int tam, int ced) {
 
     return estado;
 }
+
 int guardar (Banco cliente[], int tam){
     for (int i = 0; i < tam; i++){
         if (cliente[i].cedula == 0 && cliente[i].email.empty() && cliente[i].celular == 0 && cliente[i].clave.empty() && cliente[i].saldo == 0){
@@ -157,18 +159,22 @@ bool validarCedula (Banco cliente[], int tam, int ced){
     }
     return false;
 }
+
 void consultarSaldo(Banco cliente[], int tam, int ced){
     if(validarCedula(cliente,tam,ced)){
         bool validacion=compararClave(cliente,tam,ced);
         if(validacion){
             for(int i=0;i<tam;i++){
-                if(cliente[i].cedula==ced){
+                if(cliente[i].cedula==ced && cliente[i].saldo>1500){
                     cout<<"\nHOLA SR "<<cliente[i].nombre<<"\n";
                     cout<<"VER EL SALDO TIENE UN COSTO DE $1,500\n";
                     cout<<"SU SALDO ANTES DE CONSULTAR ES-->"<<cliente[i].saldo<<"\n";
                     cliente[i].saldo-=1500;
                     cout<<"SU SALDO ACTUAL ES DE-->"<<cliente[i].saldo<<"\n";
                     break;
+                }
+                else{
+                    cout<<"LA CUENTA NO TIENE SALDO SUFICIENTE PARA CONSULTAR EL DINERO GUARDADO\n.";
                 }
             }
         } else {
@@ -279,6 +285,42 @@ void crearCuenta (Banco cliente[], int tam){
     }
 }
 
+void retiros(Banco cliente[],int tam, int ced){
+    double retiro=2000,res=0,retirar=0;
+    if(validarCedula(cliente,tam,ced)){
+        bool validacion=compararClave(cliente,tam,ced);
+        if(validacion){
+            for(int i=0;i<tam;i++){
+                if(cliente[i].cedula==ced){
+                    cout<<"\nHOLA SR "<<cliente[i].nombre<<"\n";
+                    cout<<"HACER UN RETIRO TIENE UN COSTO DE $2,000\n";
+                    cout<<"SU SALDO ANTES DE RETIRAR ES-->"<<cliente[i].saldo<<"\n";
+                    cout<<"INGRESE LA CANTIDAD DE DINERO QUE DESEA RETIRAR-->";
+                    cin>>retirar;
+                    if(retirar+2000<cliente[i].saldo){
+                        cin.ignore();
+                        res=(cliente[i].saldo-retirar)-retiro;
+                        cliente[i].saldo=res;
+                        cout<<"HA RETIRADO-->"<<retirar<<" SATISFACTORIAMENTE.\n";
+                        cout<<"SU SALDO DESPUES DE RETIRAR ES-->"<<cliente[i].saldo<<"\n";
+                    }
+                    else{
+                        cout<<"LA CUENTA NO TIENE SALDO SUFICIENTE PARA RETIRAR "<<retirar<<"\n";
+                    }
+                }
+                else{
+                    cout << "EL USUARIO CON LA CEDULA: " << ced << "NO ESTA REGISTRADO.\n";
+                }
+            }
+        } else {
+            cout << "\nLA CONTRASENA NO ES CORRECTA.\n";
+        }
+    } else {
+        cin.ignore();
+        cout << "LA CEDULA NO EXISTE EN EL SISTEMA.\n";
+    }
+}
+
 void menu(){
     int opcion = 0;
     Banco cliente[tam];
@@ -333,7 +375,6 @@ void menu(){
             case 3:{
                 system("cls");
                 int ced = 0;
-                string clave="";
                 cout << "INGRESE EL NUMERO DE CEDULA A LA CUAL VA A CONSULTAR SALDO.\n-->";
                 cin >> ced;
                 consultarSaldo(cliente, tam, ced);
@@ -342,6 +383,10 @@ void menu(){
             }
             case 4:{
                 system("cls");
+                int ced = 0;
+                cout<<"INGRESE EL NUMERO DE CEDULA PARA HACER EL RETIRO.\n-->";
+                cin>>ced;
+                retiros(cliente,tam,ced);
                 cin.ignore();
                 break;
             }
