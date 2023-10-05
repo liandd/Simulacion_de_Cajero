@@ -108,7 +108,7 @@ bool compararClave(Banco cliente[], int tam, int ced) {
         clave += letra;
         contarLetras++;
         if (contarLetras == 5) {
-            if (intentos >= 3) {
+            if (intentos == 3) {
                 cout << "\nHA SUPERADO EL NUMERO DE INTENTOS DISPONIBLES\n";
                 estado = false;
                 break;
@@ -174,7 +174,8 @@ void consultarSaldo(Banco cliente[], int tam, int ced){
                     break;
                 }
                 else{
-                    cout<<"LA CUENTA NO TIENE SALDO SUFICIENTE PARA CONSULTAR EL DINERO GUARDADO\n.";
+                    cout<<"\nLA CUENTA NO TIENE SALDO SUFICIENTE PARA CONSULTAR EL DINERO GUARDADO.\n";
+                    break;
                 }
             }
         } else {
@@ -305,11 +306,11 @@ void retiros(Banco cliente[],int tam, int ced){
                         cout<<"SU SALDO DESPUES DE RETIRAR ES-->"<<cliente[i].saldo<<"\n";
                     }
                     else{
+                        cin.ignore();
+                        cout<<"FONDOS INSUFICIENTES.\n";
                         cout<<"LA CUENTA NO TIENE SALDO SUFICIENTE PARA RETIRAR "<<retirar<<"\n";
                     }
-                }
-                else{
-                    cout << "EL USUARIO CON LA CEDULA: " << ced << "NO ESTA REGISTRADO.\n";
+                    break;
                 }
             }
         } else {
