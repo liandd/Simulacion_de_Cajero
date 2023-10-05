@@ -166,6 +166,7 @@ void consultarSaldo(Banco cliente[], int tam, int ced){
         if(validacion){
             for(int i=0;i<tam;i++){
                 if(cliente[i].cedula==ced && cliente[i].saldo>1500){
+                    system("cls");
                     cout<<"\nHOLA SR "<<cliente[i].nombre<<"\n";
                     cout<<"VER EL SALDO TIENE UN COSTO DE $1,500\n";
                     cout<<"SU SALDO ANTES DE CONSULTAR ES-->"<<cliente[i].saldo<<"\n";
@@ -293,6 +294,7 @@ void retiros(Banco cliente[],int tam, int ced){
         if(validacion){
             for(int i=0;i<tam;i++){
                 if(cliente[i].cedula==ced){
+                    system("cls");
                     cout<<"\nHOLA SR "<<cliente[i].nombre<<"\n";
                     cout<<"HACER UN RETIRO TIENE UN COSTO DE $2,000\n";
                     cout<<"SU SALDO ANTES DE RETIRAR ES-->"<<cliente[i].saldo<<"\n";
