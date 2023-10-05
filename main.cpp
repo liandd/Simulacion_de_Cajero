@@ -175,7 +175,8 @@ void consultarSaldo(Banco cliente[], int tam, int ced){
             cout << "\nLA CONTRASENA NO ES CORRECTA.\n";
         }
     } else {
-        cout << "\nLA CEDULA NO EXISTE EN EL SISTEMA.\n";
+        cin.ignore();
+        cout << "LA CEDULA NO EXISTE EN EL SISTEMA.\n";
     }
 }
 
