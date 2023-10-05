@@ -40,6 +40,7 @@ struct Banco{
     int celular=0;
     string clave="";
     double saldo=0;
+    pair<int,string> pagos=make_pair(0,"") ;
 };
 
 bool validarClave (string clave){
@@ -241,6 +242,10 @@ void verClientes (Banco cliente[], int tam){
             cout << "CLAVE:" << cliente[i].clave<< "\n";
             cout << "CORREO:" <<cliente[i].email << "\n";
             cout << "SALDO DE LA CUENTA: " << cliente[i].saldo<< "\n";
+            cout << "-----\nPAGOS:\n\n";
+            for(int j=0;j<4;j++){
+                cout<<j+1<<" ID: "<<cliente[i].pagos.first<<" NOMBRE:"<<cliente[i].pagos.second<<"\n";
+            }
         }
         else{
             cout << "\nINGRESE MAS CLIENTES. ( # DE ESPACIOS DISPONIBLES :" << tam-i << ")\n";
@@ -273,6 +278,12 @@ void crearCuenta (Banco cliente[], int tam){
                 cliente[dato].clave = capturarClave();
                 cout << "\n";
                 cliente[dato].saldo = 0;
+                int i=0;
+                while(i<4){
+                    cliente[dato].pagos.first=0;
+                    cliente[dato].pagos.second="";
+                    i++;
+                }
             }else{
                 for (int i = 0; i < tam; i++){
                     if (cliente[i].cedula == cedula){
@@ -295,7 +306,7 @@ void retiros(Banco cliente[],int tam, int ced){
             for(int i=0;i<tam;i++){
                 if(cliente[i].cedula==ced){
                     system("cls");
-                    cout<<"\nHOLA SR "<<cliente[i].nombre<<"\n";
+                    cout<<"HOLA SR "<<cliente[i].nombre<<"\n";
                     cout<<"HACER UN RETIRO TIENE UN COSTO DE $2,000\n";
                     cout<<"SU SALDO ANTES DE RETIRAR ES-->"<<cliente[i].saldo<<"\n";
                     cout<<"INGRESE LA CANTIDAD DE DINERO QUE DESEA RETIRAR-->";
@@ -316,6 +327,40 @@ void retiros(Banco cliente[],int tam, int ced){
                 }
             }
         } else {
+            cout << "\nLA CONTRASENA NO ES CORRECTA.\n";
+        }
+    } else {
+        cin.ignore();
+        cout << "LA CEDULA NO EXISTE EN EL SISTEMA.\n";
+    }
+}
+
+void inscribirPago(Banco cliente[],int tam, int ced){
+    if(validarCedula(cliente,tam,ced)){
+        bool validacion=compararClave(cliente,tam,ced);
+        if(validacion){
+            for(int i=0;i<tam;i++){
+                if(cliente[i].cedula==ced){
+                    system("cls");
+                    int idPago=0;
+                    string producto="";
+                    cout<<"INSCRIPCION DE PAGOS.\nINGRESE EL NUMERO DE PAGO-->";
+                    cin>>idPago;
+                    if (idPago >= 1 && idPago <= 4) {
+                        cliente[i].pagos.first=idPago;
+                        cout<<"INGRESE EL NOMBRE DEL PRODUCTO-->";
+                        fflush(stdin);
+                        getline(cin,producto);
+                        cliente[i].pagos.second=producto;
+                        break;
+                    }
+                    else {
+                        cout << "NUMERO DE PAGO NO VALIDO, DEBE ESTAR ENTRE 1 Y 4.\n";
+                    }
+                }
+            }
+        }
+        else {
             cout << "\nLA CONTRASENA NO ES CORRECTA.\n";
         }
     } else {
@@ -395,6 +440,10 @@ void menu(){
             }
             case 5:{
                 system("cls");
+                int ced = 0;
+                cout<<"INGRESE EL NUMERO DE CEDULA PARA INSCRIBIR UN PAGO.\n-->";
+                cin>>ced;
+                inscribirPago(cliente,tam,ced);
                 cin.ignore();
                 break;
             }
@@ -433,6 +482,7 @@ void datosClean (){
         cliente[k].email = "";
         cliente[k].saldo = 0;
         cliente[k].nombre = "";
+
     }
 }
 
