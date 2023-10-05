@@ -40,7 +40,7 @@ struct Banco{
     int celular=0;
     string clave="";
     double saldo=0;
-    pair<int,string> pagos=make_pair(0,"") ;
+    vector<pair<int,string>> pagos ;
 };
 
 bool validarClave (string clave){
@@ -243,8 +243,8 @@ void verClientes (Banco cliente[], int tam){
             cout << "CORREO:" <<cliente[i].email << "\n";
             cout << "SALDO DE LA CUENTA: " << cliente[i].saldo<< "\n";
             cout << "-----\nPAGOS:\n\n";
-            for(int j=0;j<4;j++){
-                cout<<j+1<<" ID: "<<cliente[i].pagos.first<<" NOMBRE:"<<cliente[i].pagos.second<<"\n";
+            for (const auto& pago : cliente[i].pagos) {
+                cout << "ID: " << pago.first << " NOMBRE: " << pago.second << "\n";
             }
         }
         else{
@@ -278,12 +278,11 @@ void crearCuenta (Banco cliente[], int tam){
                 cliente[dato].clave = capturarClave();
                 cout << "\n";
                 cliente[dato].saldo = 0;
-                int i=0;
+                /*int i=0;
                 while(i<4){
-                    cliente[dato].pagos.first=0;
-                    cliente[dato].pagos.second="";
+                    cliente[dato].pagos.push_back(make_pair(0, ""));
                     i++;
-                }
+                }*/
             }else{
                 for (int i = 0; i < tam; i++){
                     if (cliente[i].cedula == cedula){
@@ -335,33 +334,41 @@ void retiros(Banco cliente[],int tam, int ced){
     }
 }
 
-void inscribirPago(Banco cliente[],int tam, int ced){
-    if(validarCedula(cliente,tam,ced)){
-        bool validacion=compararClave(cliente,tam,ced);
-        if(validacion){
+void inscribirPago(Banco cliente[], int tam, int ced) {
+    if (validarCedula(cliente, tam, ced)) {
+        bool validacion = compararClave(cliente, tam, ced);
+        if (validacion) {
             for(int i=0;i<tam;i++){
                 if(cliente[i].cedula==ced){
                     system("cls");
-                    int idPago=0;
-                    string producto="";
-                    cout<<"INSCRIPCION DE PAGOS.\nINGRESE EL NUMERO DE PAGO-->";
-                    cin>>idPago;
-                    if (idPago >= 1 && idPago <= 4) {
-                        cliente[i].pagos.first=idPago;
-                        cout<<"INGRESE EL NOMBRE DEL PRODUCTO-->";
-                        fflush(stdin);
-                        getline(cin,producto);
-                        cliente[i].pagos.second=producto;
-                        break;
-                    }
-                    else {
-                        cout << "NUMERO DE PAGO NO VALIDO, DEBE ESTAR ENTRE 1 Y 4.\n";
-                    }
+                    cout << "INSCRIPCION DE PAGOS.\n";
+                    char deseaIngresarPago;
+                    int contPagos=cliente[i].pagos.size();
+                    do {
+                        int idPago=0;
+                        string nombrePago = "";
+                        cout << "DESEA INGRESAR UN PAGO? (S/N)?--> ";
+                        cin >> deseaIngresarPago;
+                        if (toupper(deseaIngresarPago) == 'S') {
+                            cout << "INGRESE EL NUMERO DE PAGO-->";
+                            cin >> idPago;
+                            cout << "INGRESE EL NOMBRE DEL PRODUCTO--> ";
+                            cin.ignore();
+                            getline(cin, nombrePago);
+                            cliente[i].pagos.push_back({idPago, nombrePago});
+                            cout << "PAGO INGRESADO CORRECTAMENTE.\n";
+                            contPagos++;
+                            if (contPagos >= 4) {
+                                cout << "YA HAY 4 PAGOS REGISTRADOS, LIBERE ALGUNO PARA INSCRIBIR MAS.\n";
+                                break;
+                            }
+                        }
+                    } while (toupper(deseaIngresarPago) == 'S');
+                    break;
                 }
             }
-        }
-        else {
-            cout << "\nLA CONTRASENA NO ES CORRECTA.\n";
+        } else {
+            cout << "\nLA CONTRASEÑA NO ES CORRECTA.\n";
         }
     } else {
         cin.ignore();
