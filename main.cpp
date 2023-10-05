@@ -243,8 +243,11 @@ void verClientes (Banco cliente[], int tam){
             cout << "CORREO:" <<cliente[i].email << "\n";
             cout << "SALDO DE LA CUENTA: " << cliente[i].saldo<< "\n";
             cout << "-----\nPAGOS:\n\n";
-            for (const auto& pago : cliente[i].pagos) {
+            /*for (const auto& pago : cliente[i].pagos) {
                 cout << "ID: " << pago.first << " NOMBRE: " << pago.second << "\n";
+            }*/
+            for(int j=0;j<cliente[i].pagos.size();j++){
+                cout<<j+1<<") "<<cliente[i].pagos[j].first<<" NOMBRE: "<<cliente[i].pagos[j].second<<"\n";
             }
         }
         else{
@@ -345,17 +348,17 @@ void inscribirPago(Banco cliente[], int tam, int ced) {
                     char deseaIngresarPago;
                     int contPagos=cliente[i].pagos.size();
                     do {
-                        int idPago=0;
+                        int precio=0;
                         string nombrePago = "";
                         cout << "DESEA INGRESAR UN PAGO? (S/N)?--> ";
                         cin >> deseaIngresarPago;
                         if (toupper(deseaIngresarPago) == 'S') {
-                            cout << "INGRESE EL NUMERO DE PAGO-->";
-                            cin >> idPago;
+                            cout << "INGRESE EL PRECIO DE PAGO-->";
+                            cin >> precio;
                             cout << "INGRESE EL NOMBRE DEL PRODUCTO--> ";
                             cin.ignore();
                             getline(cin, nombrePago);
-                            cliente[i].pagos.push_back({idPago, nombrePago});
+                            cliente[i].pagos.push_back({precio, nombrePago});
                             cout << "PAGO INGRESADO CORRECTAMENTE.\n";
                             contPagos++;
                             if (contPagos >= 4) {
