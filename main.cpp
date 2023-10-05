@@ -1,14 +1,14 @@
 #include <bits/stdc++.h>
-#include <termios.h>//LIBERIA DE LINUX PARA USAR GETCH().
+//#include <termios.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <string>
-//#include<conio.h>
+#include<conio.h>
 
 using namespace std;
 
 int tam = 101;
-//Funcion para trabajar en linux con getch(), debido a que no esta presente en sus librerias
+/*
 int getch (void){
     struct termios oldattr, newattr;
     int ch;
@@ -32,7 +32,7 @@ int getche (void){
     tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
     return ch;
 }
-
+*/
 struct Banco{
     int cedula;
     string email;
@@ -45,8 +45,7 @@ bool validarClave (string clave){
     bool aux = true;
     longitud = clave.size();
     for (i = 0; i < longitud; i++){
-    	// Si clave no esta en ascii de los numeros 0 a 9, la clave no es numerica.
-	    if (clave[i] < 48 || clave[i] > 57){ 
+	    if (clave[i] < 48 || clave[i] > 57){
 		    aux = false;
             break;
 	    }
@@ -61,16 +60,11 @@ string capturarClave (){
     string clave;
     cout << "INGRESE UNA CLAVE PARA LA CUENTA: ";
     contarLetras = 1;
-    //Recibe la tecla enter del teclado como char, se arreglo bug que no permitia agregar mas caracteres( la contrasena ha de ser 4 numeros)
-    //al recibir enter como char solo capturaba 3 y el enter
-    //Dando un error en la linea 48 y 74, ya que la funcion validar clave va del ascii entre 48 y 57 (numeros del 0 al 9) asi que retorna t=true
-    //(por lo tanto la linea 75 no se cumple).
+
     cin.ignore();
     do{
-        //En linux usar getch() y descomentar las primeras 2 funciones, ya que son funciones definidas para usar la funcion getch().Descomentar en las lineas 11 hasta la 33 para usar esta funcion.
-	letra = getch(); //Este man es tan rapido que captura el enter con char en la contrasena, produciendo un error en la validacion de la linea 48 y 74.
-	//Se arreglo el error mencionado en los ultimos comentarios agregando cin.ignore en la linea 64.
-	//Dia 11:07/10/12/2022 ya funciona.
+	//letra = getch();
+	letra = getch();
 	cout << "*";
 	clave += letra;
 	contarLetras++;
@@ -79,10 +73,10 @@ string capturarClave (){
 	    if (comprobar == false){
 	        contarLetras = 1;
 	        system("cls");
-		cout<<"\n";
-            	cout << "CARACTER PROHIBIDO.\n";
+            cout<<"\n";
+            cout << "CARACTER PROHIBIDO.\n";
         	cout << "!VERIFICA QUE LOS DATOS SEAN CORRECTOS!.\n";
-       	        cout << "DIGITE NUEVAMENTE SU CONTRASENA : ";
+            cout << "DIGITE NUEVAMENTE SU CONTRASENA : ";
 	        clave = "";
 	        cout << "\n";
 		}
@@ -120,16 +114,19 @@ void consignacion (Banco cliente[], int tam, int ced){
         cout << "INGRESE SU NOMBRE.\n~";
         fflush(stdin);
         getline (cin, persona);
-        //Mostrar el nombre de la persona que consigna en mayuscula
         for(int i = 0; i < persona.size(); i++){
         	persona[i] = toupper(persona[i]);
 		}
         cout << "INGRESE EL MONTO A CONSIGNAR.\n~";
         cin >> dineroConsignado;
-        if (dineroConsignado >= 5000){           
+        if (dineroConsignado >= 5000){
+            double impuesto=0,saldo=0;
+            impuesto=(dineroConsignado*0.004);
+            saldo+=dineroConsignado-impuesto;
+            cout<<"saldo:"<<saldo<<"\n";
             for (int i = 0; i < tam; i++){
                 if (cliente[i].cedula == ced){
-                    cliente[i].saldo += dineroConsignado;
+                    cliente[i].saldo += saldo;
                     break;
                 }
             }
@@ -144,14 +141,13 @@ void consignacion (Banco cliente[], int tam, int ced){
         cout << "LA CUENTA NO ESTA EN NUESTRO SISTEMA.\n";
     }
 }
-//Funcion exclusiva para ver los datos guardados en la estructura
 void verClientes (Banco cliente[], int tam){
     system("cls");
     cout << "A VER QUE HAY GUARDADO.\n";
     for (int i = 0; i < tam; i++){
-        int cedula = 0; 
+        int cedula = 0;
         cedula = cliente[i].cedula;
-        if (cedula != 0){                             
+        if (cedula != 0){
             cout << "\nCliente # " << i+1 << "\n";
             cout << cliente[i].cedula << "\n";
             cout << fixed;
@@ -168,27 +164,23 @@ void verClientes (Banco cliente[], int tam){
     cin.get();
 }
 
-void crearCuenta (Banco cliente[], int tam){ 
-//mmm no esta guardando datos en la struct.
-//Dia 9:09/10/10/2022 ya funciona.
+void crearCuenta (Banco cliente[], int tam){
     system("cls");
     cout << "GRACIAS POR ELEGIRNOS.\n";
-    cout << "COMPLETE EL FORMULARIO PARA CREAR UNA CUENTA.\n";  
-    //Dato guarda la posicion de la estructura donde el cliente no existe, posteriormente creara la cuenta del cliente en esa posicion de la estructura
+    cout << "COMPLETE EL FORMULARIO PARA CREAR UNA CUENTA.\n";
     int dato = guardar(cliente, tam);
-    int cedula = 0;   
-	//Valida si la posicion que retorna la funcion guardar es mayor a 0 y menor que 100, ya que solo pueden existir 100 cuentas y no pueden ser menores a 0, ni mayores a 100          
-        if (dato >= 0 && dato < tam){    
+    int cedula = 0;
+        if (dato >= 0 && dato < tam){
             cout << "INGRESE EL NUMERO DE CEDULA: ";
             cin >> cedula;
             if (!validarCedula(cliente, tam, cedula)){
-                cliente[dato].cedula = cedula; 
+                cliente[dato].cedula = cedula;
                 cout << "\nINGRESE SU EMAIL: ";
                 cin >> cliente[dato].email;
                 cout << "\nINGRESE SU CELULAR: ";
                 cin >> cliente[dato].celular;
                 cout << "\n";
-                cliente[dato].clave = capturarClave();           
+                cliente[dato].clave = capturarClave();
                 cout << "\n";
                 cliente[dato].saldo = 0;
             }else{
@@ -202,7 +194,7 @@ void crearCuenta (Banco cliente[], int tam){
                 return;
             }
         cout << "\nLA CUENTA SE HA CREADO.\n";
-    }    
+    }
 }
 
 void menu(){
@@ -220,7 +212,7 @@ void menu(){
             cout << "7. CANCELACION DE LA CUENTA.\n";
             cout << "8. SALIR.\n";
             cout << "~  QUE DESEA HACER? :";
-            cin >> opcion;  //Validar no ingresar letras.Aun falta que no se pueda ingresar letras 14/01/2023
+            cin >> opcion;
         switch (opcion){
             case 1:{
                 system("cls");
@@ -241,8 +233,6 @@ void menu(){
                     system("cls");
                     cout << "NINGUNA OPCION DISPONIBLE FUE SELECCIONADA.\n";
                      cin.ignore();
-                    // cin.get();
-                    // return menu();
                     break;
                 }
                 cin.ignore();
@@ -250,8 +240,6 @@ void menu(){
             }
             case 2:{
                 system("cls");
-                // Funciona mostrando los datos de la struct banco en la posicion 0. SIRVE COMO TEST
-                // cout << cliente->cedula << "\n" << cliente->celular << "\n" << cliente->clave << "\n" << cliente->email << "\n" << cliente->saldo << "\n";
                 int ced = 0;
                 cout << "INGRESE EL NUMERO DE CEDULA A LA CUAL VA A CONSIGNAR.\n~";
                 cin >> ced;
@@ -301,17 +289,15 @@ void menu(){
         }
     }while (opcion >= 1 && opcion < 9);
 }
-
-//Blanquear Estructura en todas sus posiciones
 void datosClean (){
     Banco cliente[tam];
-    for (int k = 0; k < tam; k++){ 
+    for (int k = 0; k < tam; k++){
         cliente[k].cedula = 0;
         cliente[k].celular = 0;
         cliente[k].clave = "";
         cliente[k].email = "";
         cliente[k].saldo = 0;
-    }  
+    }
 }
 
 int main (){
