@@ -34,11 +34,12 @@ int getche (void){
 }
 */
 struct Banco{
-    int cedula;
-    string email;
-    int celular;
-    string clave;
-    double saldo;
+    string nombre="";
+    int cedula=0;
+    string email="";
+    int celular=0;
+    string clave="";
+    double saldo=0;
 };
 bool validarClave (string clave){
     int longitud, i;
@@ -60,7 +61,6 @@ string capturarClave (){
     string clave;
     cout << "INGRESE UNA CLAVE PARA LA CUENTA: ";
     contarLetras = 1;
-
     cin.ignore();
     do{
 	//letra = getch();
@@ -76,7 +76,7 @@ string capturarClave (){
             cout<<"\n";
             cout << "CARACTER PROHIBIDO.\n";
         	cout << "!VERIFICA QUE LOS DATOS SEAN CORRECTOS!.\n";
-            cout << "DIGITE NUEVAMENTE SU CONTRASENA : ";
+            cout << "DIGITE NUEVAMENTE SU CONTRASEÑA : ";
 	        clave = "";
 	        cout << "\n";
 		}
@@ -85,6 +85,61 @@ string capturarClave (){
     return clave;
 }
 
+bool compararClave(Banco cliente[], int tam, int ced) {
+    int contarLetras;
+    bool comprobar = true, estado = false;
+    char letra;
+    string clave;
+    int intentos = 0;
+    string pin;
+    cout << "INGRESE LA CLAVE DE LA CUENTA-->";
+    contarLetras = 1;
+    cin.ignore();
+    for (int i = 0; i < tam; i++) {
+        if (cliente[i].cedula == ced) {
+            pin = cliente[i].clave;
+            break;
+        }
+    }
+    do {
+        letra = getch();
+        cout << "*";
+        clave += letra;
+        contarLetras++;
+        if (contarLetras == 5) {
+            if (intentos >= 3) {
+                cout << "\nHA SUPERADO EL NUMERO DE INTENTOS DISPONIBLES PARA CONSULTAR SALDO\n";
+                estado = false;
+                break;
+            }
+            comprobar = validarClave(clave);
+            if (comprobar == false) {
+                contarLetras = 1;
+                system("cls");
+                cout << "CARACTER PROHIBIDO.\n";
+                cout << "!VERIFICA QUE LOS DATOS SEAN CORRECTOS!.\n";
+                cout << "DIGITE NUEVAMENTE SU CONTRASEÑA : ";
+                clave = "";
+                intentos++;
+                cout << "\n";
+                cout << "INTENTOS RESTANTES: " << 3 - intentos << endl;
+            } else if (clave != pin) {
+                contarLetras = 1;
+                system("cls");
+                cout << "CONTRASENA INCORRECTA.\n";
+                cout << "DIGITE NUEVAMENTE SU CONTRASENA : ";
+                clave = "";
+                intentos++;
+                cout << "\n";
+                cout << "INTENTOS RESTANTES: " << 3 - intentos << endl;
+            } else {
+                estado = true;
+            }
+        }
+    } while (contarLetras <= 4 || comprobar == false);
+
+    return estado;
+}
 int guardar (Banco cliente[], int tam){
     for (int i = 0; i < tam; i++){
         if (cliente[i].cedula == 0 && cliente[i].email.empty() && cliente[i].celular == 0 && cliente[i].clave.empty() && cliente[i].saldo == 0){
@@ -102,6 +157,27 @@ bool validarCedula (Banco cliente[], int tam, int ced){
     }
     return false;
 }
+void consultarSaldo(Banco cliente[], int tam, int ced){
+    if(validarCedula(cliente,tam,ced)){
+        bool validacion=compararClave(cliente,tam,ced);
+        if(validacion){
+            for(int i=0;i<tam;i++){
+                if(cliente[i].cedula==ced){
+                    cout<<"\nHOLA SR "<<cliente[i].nombre<<"\n";
+                    cout<<"VER EL SALDO TIENE UN COSTO DE $1,500\n";
+                    cout<<"SU SALDO ANTES DE CONSULTAR ES-->"<<cliente[i].saldo<<"\n";
+                    cliente[i].saldo-=1500;
+                    cout<<"SU SALDO ACTUAL ES DE-->"<<cliente[i].saldo<<"\n";
+                    break;
+                }
+            }
+        } else {
+            cout << "\nLA CONTRASENA NO ES CORRECTA.\n";
+        }
+    } else {
+        cout << "\nLA CEDULA NO EXISTE EN EL SISTEMA.\n";
+    }
+}
 
 void consignacion (Banco cliente[], int tam, int ced){
     bool cedulaExiste = validarCedula (cliente, tam, ced);
@@ -111,19 +187,18 @@ void consignacion (Banco cliente[], int tam, int ced){
         system ("cls");
         cin.ignore();
         cout << "CONSIGNACIONES.\n";
-        cout << "INGRESE SU NOMBRE.\n~";
+        cout << "INGRESE SU NOMBRE.-->";
         fflush(stdin);
         getline (cin, persona);
         for(int i = 0; i < persona.size(); i++){
         	persona[i] = toupper(persona[i]);
 		}
-        cout << "INGRESE EL MONTO A CONSIGNAR.\n~";
+        cout << "INGRESE EL MONTO A CONSIGNAR.-->";
         cin >> dineroConsignado;
         if (dineroConsignado >= 5000){
             double impuesto=0,saldo=0;
-            impuesto=(dineroConsignado*0.004);
+            impuesto=(dineroConsignado/1000)*4;
             saldo+=dineroConsignado-impuesto;
-            cout<<"saldo:"<<saldo<<"\n";
             for (int i = 0; i < tam; i++){
                 if (cliente[i].cedula == ced){
                     cliente[i].saldo += saldo;
@@ -141,6 +216,7 @@ void consignacion (Banco cliente[], int tam, int ced){
         cout << "LA CUENTA NO ESTA EN NUESTRO SISTEMA.\n";
     }
 }
+
 void verClientes (Banco cliente[], int tam){
     system("cls");
     cout << "A VER QUE HAY GUARDADO.\n";
@@ -148,12 +224,13 @@ void verClientes (Banco cliente[], int tam){
         int cedula = 0;
         cedula = cliente[i].cedula;
         if (cedula != 0){
-            cout << "\nCliente # " << i+1 << "\n";
-            cout << cliente[i].cedula << "\n";
+            cout << "\nCLIENTE # " << i+1 << "\n";
+            cout << "NOMBRE:" << cliente[i].nombre << "\n";
+            cout << "CEDULA:" << cliente[i].cedula << "\n";
             cout << fixed;
-            cout << setprecision(2) << cliente[i].celular << "\n";
-            cout << cliente[i].clave<< "\n";
-            cout << cliente[i].email << "\n";
+            cout << setprecision(2) << "CELULAR:" << cliente[i].celular << "\n";
+            cout << "CLAVE:" << cliente[i].clave<< "\n";
+            cout << "CORREO:" <<cliente[i].email << "\n";
             cout << "SALDO DE LA CUENTA: " << cliente[i].saldo<< "\n";
         }
         else{
@@ -170,14 +247,18 @@ void crearCuenta (Banco cliente[], int tam){
     cout << "COMPLETE EL FORMULARIO PARA CREAR UNA CUENTA.\n";
     int dato = guardar(cliente, tam);
     int cedula = 0;
+    string nombre;
         if (dato >= 0 && dato < tam){
-            cout << "INGRESE EL NUMERO DE CEDULA: ";
+            cout << "INGRESE SU NOMBRE--> ";
+            cin >> nombre;
+            cout << "INGRESE EL NUMERO DE CEDULA--> ";
             cin >> cedula;
             if (!validarCedula(cliente, tam, cedula)){
+                cliente[dato].nombre = nombre;
                 cliente[dato].cedula = cedula;
-                cout << "\nINGRESE SU EMAIL: ";
+                cout << "INGRESE SU EMAIL--> ";
                 cin >> cliente[dato].email;
-                cout << "\nINGRESE SU CELULAR: ";
+                cout << "INGRESE SU CELULAR--> ";
                 cin >> cliente[dato].celular;
                 cout << "\n";
                 cliente[dato].clave = capturarClave();
@@ -211,7 +292,7 @@ void menu(){
             cout << "6. PAGOS.\n";
             cout << "7. CANCELACION DE LA CUENTA.\n";
             cout << "8. SALIR.\n";
-            cout << "~  QUE DESEA HACER? :";
+            cout << "~  QUE DESEA HACER?--> ";
             cin >> opcion;
         switch (opcion){
             case 1:{
@@ -241,7 +322,7 @@ void menu(){
             case 2:{
                 system("cls");
                 int ced = 0;
-                cout << "INGRESE EL NUMERO DE CEDULA A LA CUAL VA A CONSIGNAR.\n~";
+                cout << "INGRESE EL NUMERO DE CEDULA A LA CUAL VA A CONSIGNAR.\n-->";
                 cin >> ced;
                 consignacion (cliente, tam, ced);
                 cin.get();
@@ -249,32 +330,37 @@ void menu(){
                 break;
             }
             case 3:{
-                system("clear");
+                system("cls");
+                int ced = 0;
+                string clave="";
+                cout << "INGRESE EL NUMERO DE CEDULA A LA CUAL VA A CONSULTAR SALDO.\n-->";
+                cin >> ced;
+                consultarSaldo(cliente, tam, ced);
                 cin.ignore();
                 break;
             }
             case 4:{
-                system("clear");
+                system("cls");
                 cin.ignore();
                 break;
             }
             case 5:{
-                system("clear");
+                system("cls");
                 cin.ignore();
                 break;
             }
             case 6:{
-                system("clear");
+                system("cls");
                 cin.ignore();
                 break;
             }
             case 7:{
-                system("clear");
+                system("cls");
                 cin.ignore();
                 break;
             }
             case 8:{
-                system("clear");
+                system("cls");
                 cout << "SALIENDO....\n";
                 exit(0);
                 break;
@@ -297,6 +383,7 @@ void datosClean (){
         cliente[k].clave = "";
         cliente[k].email = "";
         cliente[k].saldo = 0;
+        cliente[k].nombre = "";
     }
 }
 
