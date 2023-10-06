@@ -78,7 +78,7 @@ string capturarClave (){
             cout<<"\n";
             cout << "CARACTER PROHIBIDO.\n";
         	cout << "!VERIFICA QUE LOS DATOS SEAN CORRECTOS!.\n";
-            cout << "DIGITE NUEVAMENTE SU CONTRASEÑA : ";
+            cout << "DIGITE NUEVAMENTE SU CONTRASEï¿½A : ";
 	        clave = "";
 	        cout << "\n";
 		}
@@ -120,7 +120,7 @@ bool compararClave(Banco cliente[], int tam, int ced) {
                 system("cls");
                 cout << "CARACTER PROHIBIDO.\n";
                 cout << "!VERIFICA QUE LOS DATOS SEAN CORRECTOS!.\n";
-                cout << "DIGITE NUEVAMENTE SU CONTRASEÑA : ";
+                cout << "DIGITE NUEVAMENTE SU CONTRASENA : ";
                 clave = "";
                 intentos++;
                 cout << "\n";
@@ -371,7 +371,7 @@ void inscribirPago(Banco cliente[], int tam, int ced) {
                 }
             }
         } else {
-            cout << "\nLA CONTRASEÑA NO ES CORRECTA.\n";
+            cout << "\nLA CONTRASENA NO ES CORRECTA.\n";
         }
     } else {
         cin.ignore();
@@ -466,7 +466,7 @@ void eliminarCuenta(Banco cliente[], int tam, int ced) {
             }
         } else {
             cin.ignore();
-            cout << "LA CONTRASEÑA NO ES CORRECTA.\n";
+            cout << "LA CONTRASENA NO ES CORRECTA.\n";
         }
     } else {
         cin.ignore();
