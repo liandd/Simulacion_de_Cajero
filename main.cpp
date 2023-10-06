@@ -379,6 +379,50 @@ void inscribirPago(Banco cliente[], int tam, int ced) {
     }
 }
 
+void pagos(Banco cliente[], int tam, int ced) {
+    if (validarCedula(cliente, tam, ced)) {
+        bool validacion = compararClave(cliente, tam, ced);
+        if (validacion) {
+            for (int i = 0; i < tam; i++) {
+                if (cliente[i].cedula == ced) {
+                    system("cls");
+                    int numPago = 0;
+                    cout << "HOLA SR " << cliente[i].nombre << "\nESTOS SON SUS PAGOS REGISTRADOS:\n";
+                    for (int j = 0; j < cliente[i].pagos.size(); j++) {
+                        cout << j + 1 << ") " << cliente[i].pagos[j].first << " NOMBRE: " << cliente[i].pagos[j].second << "\n";
+                    }
+                    cout << "ESCOJA UN NUMERO DE PAGO-->";
+                    cin >> numPago;
+                    if (numPago >= 1 && numPago <= cliente[i].pagos.size()) {
+                            system("cls");
+                            cout << "EL PRODUCTO A SELECCIONADO A PAGAR ES:\n-->" << cliente[i].pagos[numPago - 1].second << "\nCON UN COSTO DE:\n-->$" << cliente[i].pagos[numPago - 1].first << "\n";
+                            char letra;
+                            do {
+                                cout << "DESEA PAGAR EL PRODUCTO? (S/N)";
+                                cin >> letra;
+                                if (toupper(letra) == 'S') {
+                                    cin.ignore();
+                                    if (cliente[i].pagos[numPago - 1].first > cliente[i].saldo) {
+                                        cout << "FONDO INSUFICIENTE PARA PAGAR.\n";
+                                        break;
+                                    }else{
+                                        cliente[i].saldo -= cliente[i].pagos[numPago - 1].first;
+                                        cout << "SE HA PAGADO CORRECTAMENTE.\n";
+                                        cliente[i].pagos.erase(cliente[i].pagos.begin() + numPago);
+                                    }
+                                }
+                        }while (toupper(letra)=='S');
+                    }
+                }else {
+                    break;
+                }
+            }
+        } else {
+            cin.ignore();
+            cout << "LA CEDULA NO EXISTE EN EL SISTEMA.\n";
+        }
+    }
+}
 void menu(){
     int opcion = 0;
     Banco cliente[tam];
@@ -459,6 +503,10 @@ void menu(){
             }
             case 6:{
                 system("cls");
+                int ced = 0;
+                cout<<"INGRESE EL NUMERO DE CEDULA PARA REALIZAR UN PAGO.\n-->";
+                cin>>ced;
+                pagos(cliente,tam,ced);
                 cin.ignore();
                 break;
             }
