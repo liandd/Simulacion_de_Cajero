@@ -409,6 +409,7 @@ void pagos(Banco cliente[], int tam, int ced) {
                                         cliente[i].saldo -= cliente[i].pagos[numPago - 1].first;
                                         cout << "SE HA PAGADO CORRECTAMENTE.\n";
                                         cliente[i].pagos.erase(cliente[i].pagos.begin() + numPago);
+                                        break;
                                     }
                                 }
                         }while (toupper(letra)=='S');
@@ -424,35 +425,52 @@ void pagos(Banco cliente[], int tam, int ced) {
     }
 }
 
-void eliminarCuenta(Banco cliente[], int tam, int ced){
+void eliminarCuenta(Banco cliente[], int tam, int ced) {
     if (validarCedula(cliente, tam, ced)) {
-            bool validacion = compararClave(cliente, tam, ced);
-            if (validacion) {
-                for (int i = 0; i < tam; i++) {
-                    if (cliente[i].cedula == ced) {
-                        bool pagos=false;
-                        for (int j = 0; j < cliente[i].pagos.size(); j++) {
-                            //cout << j + 1 << ") " << cliente[i].pagos[j].first << " NOMBRE: " << cliente[i].pagos[j].second << "\n";
-                            if(cliente[i].pagos[j].first==0 && cliente[i].pagos[j].second.empty()){
-                                cliente[i].cedula = 0;
-                                cliente[i].celular = 0;
-                                cliente[i].clave = "";
-                                cliente[i].email = "";
-                                cliente[i].saldo = 0;
-                                cliente[i].nombre = "";
-                                cout << "SE HA ELIMINADO LA CUENTA DEL SISTEMA.\n";
-                                break;
-                            }
+        bool validacion = compararClave(cliente, tam, ced);
+        if (validacion) {
+            for (int i = 0; i < tam; i++) {
+                if (cliente[i].cedula == ced) {
+                    int pagosValidos = 0;
+                    for (int j = 0; j < cliente[i].pagos.size(); j++) {
+                        if (cliente[i].pagos[j].first != 0 || !cliente[i].pagos[j].second.empty()) {
+                            pagosValidos++;
                         }
                     }
-                    else {
+                    if (pagosValidos <= 4) {
+                        cout << "\nTIENE 4 O MAS PAGOS REGISTRADOS, NO PUEDE ELIMINAR LA CUENTA.\n";
                         break;
+                    } else {
+                        cliente[i].pagos.clear();
+                        cliente[i].cedula = 0;
+                        cliente[i].celular = 0;
+                        cliente[i].clave = "";
+                        cliente[i].email = "";
+                        cliente[i].saldo = 0;
+                        cliente[i].nombre = "";
+                        cout << "\nSE HA ELIMINADO LA CUENTA DEL SISTEMA Y TODOS LOS PAGOS.\n";
+                        pagosValidos=0;
+                        break;
+                    }
+                    if (pagosValidos > 0 && pagosValidos < 4) {
+                        char letra;
+                        cout << "TIENE " << pagosValidos << " PAGOS PENDIENTES.\n";
+                        cout << "DESEA REALIZAR SUS PAGOS DIRECTAMENTE ANTES DE ELIMINAR LA CUENTA? (S/N).";
+                        cin >> letra;
+                        if (toupper(letra) == 'S') {
+                            pagos(cliente, tam, ced);
+                        }
+                    }
+                    break;
                 }
             }
         } else {
             cin.ignore();
-            cout << "LA CEDULA NO EXISTE EN EL SISTEMA.\n";
+            cout << "LA CONTRASEÑA NO ES CORRECTA.\n";
         }
+    } else {
+        cin.ignore();
+        cout << "LA CEDULA NO EXISTE EN EL SISTEMA.\n";
     }
 }
 
@@ -545,6 +563,10 @@ void menu(){
             }
             case 7:{
                 system("cls");
+                int ced = 0;
+                cout<<"INGRESE EL NUMERO DE CEDULA PARA ELIMINAR.\n-->";
+                cin>>ced;
+                eliminarCuenta(cliente,tam,ced);
                 cin.ignore();
                 break;
             }
