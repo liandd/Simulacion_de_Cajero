@@ -7,7 +7,7 @@
 
 using namespace std;
 
-int tam = 101;
+int tam = 100;
 /*
 int getch (void){
     struct termios oldattr, newattr;
@@ -430,6 +430,20 @@ void eliminarCuenta(Banco cliente[], int tam, int ced){
             if (validacion) {
                 for (int i = 0; i < tam; i++) {
                     if (cliente[i].cedula == ced) {
+                        bool pagos=false;
+                        for (int j = 0; j < cliente[i].pagos.size(); j++) {
+                            //cout << j + 1 << ") " << cliente[i].pagos[j].first << " NOMBRE: " << cliente[i].pagos[j].second << "\n";
+                            if(cliente[i].pagos[j].first==0 && cliente[i].pagos[j].second.empty()){
+                                cliente[i].cedula = 0;
+                                cliente[i].celular = 0;
+                                cliente[i].clave = "";
+                                cliente[i].email = "";
+                                cliente[i].saldo = 0;
+                                cliente[i].nombre = "";
+                                cout << "SE HA ELIMINADO LA CUENTA DEL SISTEMA.\n";
+                                break;
+                            }
+                        }
                     }
                     else {
                         break;
