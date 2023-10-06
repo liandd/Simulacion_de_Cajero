@@ -423,6 +423,25 @@ void pagos(Banco cliente[], int tam, int ced) {
         }
     }
 }
+
+void eliminarCuenta(Banco cliente[], int tam, int ced){
+    if (validarCedula(cliente, tam, ced)) {
+            bool validacion = compararClave(cliente, tam, ced);
+            if (validacion) {
+                for (int i = 0; i < tam; i++) {
+                    if (cliente[i].cedula == ced) {
+                    }
+                    else {
+                        break;
+                }
+            }
+        } else {
+            cin.ignore();
+            cout << "LA CEDULA NO EXISTE EN EL SISTEMA.\n";
+        }
+    }
+}
+
 void menu(){
     int opcion = 0;
     Banco cliente[tam];
