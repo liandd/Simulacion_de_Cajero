@@ -31,7 +31,7 @@ int getche (void){
     ch = getchar();
     tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
     return ch;
-}
+} 
 */
 struct Banco{
     string nombre="";
@@ -75,10 +75,10 @@ string capturarClave (){
 	    if (comprobar == false){
 	        contarLetras = 1;
 	        system("cls");
-            cout<<"\n";
-            cout << "CARACTER PROHIBIDO.\n";
+                cout<<"\n";
+                cout << "CARACTER PROHIBIDO.\n";
         	cout << "!VERIFICA QUE LOS DATOS SEAN CORRECTOS!.\n";
-            cout << "DIGITE NUEVAMENTE SU CONTRASEÑA : ";
+                cout << "DIGITE NUEVAMENTE SU CONTRASEÑA : ";
 	        clave = "";
 	        cout << "\n";
 		}
